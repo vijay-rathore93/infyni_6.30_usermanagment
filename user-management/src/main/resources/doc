@@ -1,0 +1,56 @@
+//Exact response
+//@Controller+@ResponseBody
+//@Controller+ResponseEntity
+1.@Controller
+  @ResponseBody
+  public class UserController {
+
+      @GetMapping("/getUI")
+
+      public   String getUI() {
+          return "a";
+      }
+  }
+
+
+2.
+
+@Controller
+public class UserController {
+
+   @GetMapping("/getUI")
+   @ResponseBody
+      public   String getUI() {
+          return "a";
+      }
+  }
+
+3.
+@Controller
+public class UserController {
+
+   @GetMapping("/getUI")
+
+      public  @ResponseBody String getUI() {
+          return "a";
+      }
+  }
+
+
+
+
+
+// only @Controller then it will look for UI.
+
+@Controller
+public class UserController {
+
+    @GetMapping("/getUI")
+
+    public   String getUI() {
+        return "a";
+    }
+}
+
+
+
