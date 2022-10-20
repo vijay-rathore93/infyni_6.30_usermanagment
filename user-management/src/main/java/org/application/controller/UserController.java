@@ -1,29 +1,50 @@
 package org.application.controller;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.application.exception.UserException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import static org.application.util.Constants.GENERAL_ERROR;
+import org.application.model.SuccessResponse;
+import org.application.model.UserBasicInfoDTO;
+import org.application.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 
 @Slf4j
-@RequestMapping(value = "/user")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(value = "/user")
 public class UserController {
 
+    private final UserService userService;
 
+    @PostMapping
+    public ResponseEntity<UserBasicInfoDTO> processUserData(@RequestBody UserBasicInfoDTO userBasicInfoDTO) {
+        log.info("Saving the User info started....");
+        UserBasicInfoDTO createdData = userService.saveUserInfo(userBasicInfoDTO);
+        return new ResponseEntity<>(createdData, HttpStatus.CREATED);
+    }
 
-    @GetMapping
-    public String getMessage(){
-        throw new UserException("Testing error",GENERAL_ERROR);
+    @GetMapping("/all")
+    public ResponseEntity<List<UserBasicInfoDTO>> getAllData() {
+        log.info("getAllData the User info started....");
+        List<UserBasicInfoDTO> response = userService.getAllData();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("{userId}")
+    public ResponseEntity<UserBasicInfoDTO> getSingleUserData(@PathVariable String userId) {
+        log.info("getSingleUserData  started....");
+        UserBasicInfoDTO response = userService.getSingleUserData(userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{userId}")
+    public ResponseEntity<SuccessResponse> deleteSingleUserInfo(@PathVariable String userId) {
+        log.info("getSingleUserData  started....");
+        SuccessResponse response = userService.deleteSingleUserInfo(userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
