@@ -39,6 +39,10 @@ public class UserBasicInfo extends BaseEntity {
     private Date birthDate;
 
 
+    @Column(name = "token",unique = true)
+    private String token;
+
+
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
    // @JoinColumn(name = "deptId")
     @PrimaryKeyJoinColumn

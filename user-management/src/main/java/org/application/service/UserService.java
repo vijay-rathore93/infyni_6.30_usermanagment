@@ -5,12 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.application.entity.UserBasicInfo;
 import org.application.exception.UserException;
+import org.application.model.NotificationRequestDTO;
 import org.application.model.SuccessResponse;
 import org.application.model.UserBasicInfoDTO;
 import org.application.repo.UserRepo;
+import org.application.util.UserUtil;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.List;
@@ -30,12 +35,32 @@ public class UserService {
 
     private final ModelMapper modelMapper;
 
+    private final RestTemplate restTemplate;
+    @Autowired
+    private  UserUtil userUtil;
+
     public UserBasicInfoDTO saveUserInfo(UserBasicInfoDTO userBasicInfoDTO) {
         /* userBasicInfoDTO.setUserId(UUID.fromString(userBasicInfoDTO.getContact()+ Instant.now().toString()).toString());*/
         userBasicInfoDTO.setUserId(UUID.randomUUID().toString());
+        userBasicInfoDTO.setToken(UUID.randomUUID()+userBasicInfoDTO.getUserId());
+
+
+
         UserBasicInfo entityTobeCreated = modelMapper.map(userBasicInfoDTO, UserBasicInfo.class);
         UserBasicInfo entityCreated = userRepo.save(entityTobeCreated);
         UserBasicInfoDTO response = modelMapper.map(entityCreated, UserBasicInfoDTO.class);
+
+
+
+        //notification request creation
+        NotificationRequestDTO notificationRequestDTO= userUtil.getNotificationRequest(response);
+
+        //making the sync call to Notification service
+
+
+
+
+
         return response;
     }
 
