@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface UserRepo extends JpaRepository<UserBasicInfo,Integer> {
     Optional<UserBasicInfo> findByUserId(String userId);
 
+    Optional<UserBasicInfo> findByToken(String token);
+
     // save(entity_without_primary key)--->  created entity with primary key
     // saveAll(List<entity_without_primary key>)--->  List<created entity with primary key>
     //  findAll()  ->  List<Entity>

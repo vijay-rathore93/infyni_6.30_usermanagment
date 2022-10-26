@@ -21,8 +21,8 @@ public class NotificationController {
 
     @PostMapping("/send")
     public ResponseEntity<SuccessResponse> sendNotification(@RequestBody NotificationRequestDTO request){
-      //  SuccessResponse  response= notificationService.sendNotification(request);
-        return new ResponseEntity<>(null, HttpStatus.ACCEPTED);
+       SuccessResponse  response= notificationService.sendNotification(request);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
 //qualifier

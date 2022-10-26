@@ -12,14 +12,15 @@ import org.application.repo.UserRepo;
 import org.application.util.UserUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,13 +38,18 @@ public class UserService {
 
     private final RestTemplate restTemplate;
     @Autowired
-    private  UserUtil userUtil;
+    private UserUtil userUtil;
+
+    private final NotificationServiceClient notificationServiceClient;
+
+
+    @Value("${notification.endpoint}")
+    private String notificationEndPoint;
 
     public UserBasicInfoDTO saveUserInfo(UserBasicInfoDTO userBasicInfoDTO) {
         /* userBasicInfoDTO.setUserId(UUID.fromString(userBasicInfoDTO.getContact()+ Instant.now().toString()).toString());*/
         userBasicInfoDTO.setUserId(UUID.randomUUID().toString());
-        userBasicInfoDTO.setToken(UUID.randomUUID()+userBasicInfoDTO.getUserId());
-
+        userBasicInfoDTO.setToken(UUID.randomUUID() + userBasicInfoDTO.getUserId());
 
 
         UserBasicInfo entityTobeCreated = modelMapper.map(userBasicInfoDTO, UserBasicInfo.class);
@@ -51,14 +57,27 @@ public class UserService {
         UserBasicInfoDTO response = modelMapper.map(entityCreated, UserBasicInfoDTO.class);
 
 
-
         //notification request creation
-        NotificationRequestDTO notificationRequestDTO= userUtil.getNotificationRequest(response);
+        NotificationRequestDTO notificationRequestDTO = userUtil.getNotificationRequest(response);
+/*
+
+        HttpHeaders httpHeaders=new HttpHeaders();
+       // httpHeaders.set("authorization","JWT_TOKEN");
+
+        HttpEntity<NotificationRequestDTO> httpEntity=new HttpEntity<>(notificationRequestDTO,httpHeaders);
+
+
 
         //making the sync call to Notification service
+        ResponseEntity<SuccessResponse> responseResponseEntity = restTemplate
+                .postForEntity(notificationEndPoint,
+                        httpEntity, SuccessResponse.class);
+*/
 
-
-
+        ResponseEntity<SuccessResponse> responseResponseEntity=  notificationServiceClient.sendNotification(notificationRequestDTO);
+        if (responseResponseEntity.getStatusCodeValue() != HttpStatus.ACCEPTED.value()) {
+            throw new UserException("Notification sending failed....",NOTIFICATION_FAILED);
+        }
 
 
         return response;
@@ -82,5 +101,16 @@ public class UserService {
         userRepo.delete(userBasicInfo);
         SuccessResponse successResponse = SuccessResponse.builder().message(USER_DELETE_MESSAGE).build();
         return successResponse;
+    }
+
+    public SuccessResponse activateUser(String token) {
+        UserBasicInfo userBasicInfo = userRepo.findByToken(token)
+                .orElseThrow(() ->
+                        new UserException(TOKEN_NOT_FOUND, TOKEN_NOT_FOUND_CODE));
+        userBasicInfo.setActive(true);
+        userRepo.save(userBasicInfo);
+        return SuccessResponse.builder().message(ACTIVATED_MESSAGE).build();
+
+
     }
 }

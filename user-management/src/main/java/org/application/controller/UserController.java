@@ -48,6 +48,14 @@ public class UserController {
     }
 
 
+    @GetMapping("/auth/{token}")
+    public ResponseEntity<SuccessResponse> activateUser(@PathVariable String token) {
+        log.info("User activation started  started....");
+        SuccessResponse response = userService.activateUser(token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 }
 
 

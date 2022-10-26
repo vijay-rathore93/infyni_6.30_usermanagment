@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MobileNotification implements  NotificationService{
+
     @Override
-    public SuccessResponse sendNotification(NotificationBuilder notificationBuilder) {
+    public SuccessResponse sendNotification(NotificationRequestDTO notificationRequestDTO) {
         return null;
     }
 }
