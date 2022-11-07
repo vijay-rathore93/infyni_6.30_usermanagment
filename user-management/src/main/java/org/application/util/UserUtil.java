@@ -8,9 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserUtil {
-
-
-    public NotificationRequestDTO getNotificationRequest(UserBasicInfoDTO userBasicInfoDTO){
+    public NotificationRequestDTO getNotificationRequest(UserBasicInfoDTO userBasicInfoDTO) {
         return NotificationRequestDTO.builder()
                 .name(userBasicInfoDTO.getName())
                 .email(userBasicInfoDTO.getEmail())
@@ -18,7 +16,5 @@ public class UserUtil {
                 .token(userBasicInfoDTO.getToken())
                 .notificationType(NotificationType.EMAIL).build();
     }
-
-
 
 }

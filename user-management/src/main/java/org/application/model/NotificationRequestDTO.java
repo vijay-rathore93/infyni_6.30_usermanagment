@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificationRequestDTO {
-
     private String name;
     private String email;
     private Long contact;

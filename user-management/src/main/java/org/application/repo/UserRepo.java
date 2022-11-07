@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface UserRepo extends JpaRepository<UserBasicInfo,Integer> {
     Optional<UserBasicInfo> findByUserId(String userId);
-
     Optional<UserBasicInfo> findByToken(String token);
 
     // save(entity_without_primary key)--->  created entity with primary key
@@ -17,8 +16,4 @@ public interface UserRepo extends JpaRepository<UserBasicInfo,Integer> {
     //  findById(primaryKey)  ---> Optional<Entity>
     //  delete(entity) ---- void
     //  deleteAll(List<Entity>  --->void
-
-
-
-
 }

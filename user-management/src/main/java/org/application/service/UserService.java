@@ -1,6 +1,8 @@
 package org.application.service;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.application.entity.UserBasicInfo;
@@ -13,10 +15,9 @@ import org.application.util.UserUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,13 +41,15 @@ public class UserService {
     @Autowired
     private UserUtil userUtil;
 
-    private final NotificationServiceClient notificationServiceClient;
+/*   private final NotificationServiceClient notificationServiceClient;*/
+
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
 
     @Value("${notification.endpoint}")
     private String notificationEndPoint;
 
-    public UserBasicInfoDTO saveUserInfo(UserBasicInfoDTO userBasicInfoDTO) {
+    public UserBasicInfoDTO saveUserInfo(UserBasicInfoDTO userBasicInfoDTO) throws JsonProcessingException {
         /* userBasicInfoDTO.setUserId(UUID.fromString(userBasicInfoDTO.getContact()+ Instant.now().toString()).toString());*/
         userBasicInfoDTO.setUserId(UUID.randomUUID().toString());
         userBasicInfoDTO.setToken(UUID.randomUUID() + userBasicInfoDTO.getUserId());
@@ -59,9 +62,12 @@ public class UserService {
 
         //notification request creation
         NotificationRequestDTO notificationRequestDTO = userUtil.getNotificationRequest(response);
-/*
 
-        HttpHeaders httpHeaders=new HttpHeaders();
+       kafkaTemplate.send("user_management_topic",new ObjectMapper().writeValueAsString(notificationRequestDTO));
+
+
+
+   /*     HttpHeaders httpHeaders=new HttpHeaders();
        // httpHeaders.set("authorization","JWT_TOKEN");
 
         HttpEntity<NotificationRequestDTO> httpEntity=new HttpEntity<>(notificationRequestDTO,httpHeaders);
@@ -71,13 +77,13 @@ public class UserService {
         //making the sync call to Notification service
         ResponseEntity<SuccessResponse> responseResponseEntity = restTemplate
                 .postForEntity(notificationEndPoint,
-                        httpEntity, SuccessResponse.class);
-*/
+                        httpEntity, SuccessResponse.class);*/
 
-        ResponseEntity<SuccessResponse> responseResponseEntity=  notificationServiceClient.sendNotification(notificationRequestDTO);
+
+      /* ResponseEntity<SuccessResponse> responseResponseEntity=  notificationServiceClient.sendNotification(notificationRequestDTO);
         if (responseResponseEntity.getStatusCodeValue() != HttpStatus.ACCEPTED.value()) {
             throw new UserException("Notification sending failed....",NOTIFICATION_FAILED);
-        }
+        }*/
 
 
         return response;

@@ -1,5 +1,6 @@
 package org.application.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.application.model.SuccessResponse;
@@ -20,7 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserBasicInfoDTO> processUserData(@RequestBody UserBasicInfoDTO userBasicInfoDTO) {
+    public ResponseEntity<UserBasicInfoDTO> processUserData(@RequestBody UserBasicInfoDTO userBasicInfoDTO) throws JsonProcessingException {
         log.info("Saving the User info started....");
         UserBasicInfoDTO createdData = userService.saveUserInfo(userBasicInfoDTO);
         return new ResponseEntity<>(createdData, HttpStatus.CREATED);

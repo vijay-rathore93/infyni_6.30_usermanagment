@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<spring-cloud.version>2021.0.4</spring-cloud.version>
+		<image>vijayrathor/${project.artifactId}:${project.version}</image>
 	</properties>
 
 
@@ -35,6 +36,10 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
@@ -63,6 +68,10 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -97,6 +106,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
