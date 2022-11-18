@@ -17,7 +17,6 @@ import static org.application.util.Constants.ACTIVATION_MAIL_SUBJECT;
 @Service
 @RequiredArgsConstructor
 public class EmailNotificationService implements NotificationService {
-
     private final JavaMailSender javaMailSender;
 
     @Override
@@ -27,7 +26,7 @@ public class EmailNotificationService implements NotificationService {
         simpleMailMessage.setTo(notificationRequestDTO.getEmail());
         simpleMailMessage.setSubject(ACTIVATION_MAIL_SUBJECT);
         simpleMailMessage.setText(url);
-        javaMailSender.send(simpleMailMessage);
+        javaMailSender. send(simpleMailMessage);
         log.info("activation mail::"+url);
         return SuccessResponse.builder().message("Email Sent..").build();
     }

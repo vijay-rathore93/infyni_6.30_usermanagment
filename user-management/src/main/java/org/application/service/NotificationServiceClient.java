@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "notification", path = "http://localhost:10003/notification/api/v1/notification")
+@FeignClient(name = "notification-service", path = "/notification/api/v1/notification")
 public interface NotificationServiceClient {
     @PostMapping("/send")
     ResponseEntity<SuccessResponse> sendNotification(@RequestBody NotificationRequestDTO request);

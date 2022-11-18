@@ -41,9 +41,9 @@ public class UserService {
     @Autowired
     private UserUtil userUtil;
 
-/*   private final NotificationServiceClient notificationServiceClient;*/
+  private final NotificationServiceClient notificationServiceClient;
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
 
     @Value("${notification.endpoint}")
@@ -63,7 +63,7 @@ public class UserService {
         //notification request creation
         NotificationRequestDTO notificationRequestDTO = userUtil.getNotificationRequest(response);
 
-       kafkaTemplate.send("user_management_topic",new ObjectMapper().writeValueAsString(notificationRequestDTO));
+      // kafkaTemplate.send("user_management_topic",new ObjectMapper().writeValueAsString(notificationRequestDTO));
 
 
 
@@ -80,10 +80,10 @@ public class UserService {
                         httpEntity, SuccessResponse.class);*/
 
 
-      /* ResponseEntity<SuccessResponse> responseResponseEntity=  notificationServiceClient.sendNotification(notificationRequestDTO);
+      ResponseEntity<SuccessResponse> responseResponseEntity=  notificationServiceClient.sendNotification(notificationRequestDTO);
         if (responseResponseEntity.getStatusCodeValue() != HttpStatus.ACCEPTED.value()) {
             throw new UserException("Notification sending failed....",NOTIFICATION_FAILED);
-        }*/
+        }
 
 
         return response;
